@@ -13,6 +13,8 @@ void Main() {
   // 背景色
   Scene::SetBackground(Palette::White);
 
+  int t = 0;
+
   while (System::Update()) {
     // 判定部
     // TODO: 後ほど実装
@@ -29,7 +31,12 @@ void Main() {
     // ノーツ
     for (int i = 0; i < 14; ++i) {
       auto color = (i / 2) % 2 == 0 ? NoteColor::Don : NoteColor::Ka;
-      DoubleCircle{1920 - 88.75 * i, 300, 50}.draw(color);
+      DoubleCircle{1920 - 88.75 * i + 1420 - t, 300, 50}.draw(color);
+    }
+
+    ++t;
+    if (t > 3000) {
+      t = 0;
     }
 
     // レーンの左
