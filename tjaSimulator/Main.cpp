@@ -1,9 +1,18 @@
 ﻿#include <Siv3D.hpp>  // Siv3D v0.6.12
+#include <ranges>
 
 #include "constants.hpp"
 #include "doubleCircle.hpp"
 
 using namespace Constants;
+
+Array<double> getReachTimes(size_t count, double bpm, double offset = 0.0) {
+  Array<double> reachTimes(count);
+  for (size_t i = 0; i < count; ++i) {
+    reachTimes[i] = offset + 60 * i / bpm;
+  }
+  return reachTimes;
+}
 
 void Main() {
   // サイズの設定
@@ -13,9 +22,19 @@ void Main() {
   // 背景色
   Scene::SetBackground(Palette::White);
 
+  // BGM
+  const Audio audio{U"gekikk.ogg"};
+  audio.play();
+
+  // 到達時間
+  const auto reachTimes = getReachTimes(64, 190.0, 0.5);
+
   while (System::Update()) {
     // 判定部
     // TODO: 後ほど実装
+
+    // 現在の時間計測
+    auto currentTime = audio.posSec();
 
     // 彩画部
     // 数字ベタ書きも多いが後々修正
@@ -27,9 +46,11 @@ void Main() {
     Circle{617.5, 300, 50 * 5 / 3}.drawFrame(LineWidth::NoteEdge);
 
     // ノーツ
-    for (int i = 0; i < 14; ++i) {
+    for (int i = reachTimes.size() - 1; i >= 0; --i) {
+      auto reachTime = reachTimes[i];
+      auto diffTime = reachTime - currentTime;
       auto color = (i / 2) % 2 == 0 ? NoteColor::Don : NoteColor::Ka;
-      DoubleCircle{1920 - 88.75 * i, 300, 50}.draw(color);
+      DoubleCircle{617.5 + 1000 * diffTime, 300, 50}.draw(color);
     }
 
     // レーンの左
