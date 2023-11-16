@@ -3,6 +3,7 @@
 
 #include "constants.hpp"
 #include "doubleCircle.hpp"
+#include "utilities.hpp"
 
 using namespace Constants;
 
@@ -25,6 +26,10 @@ void Main() {
   // BGM
   const Audio audio{U"gekikk.ogg"};
   audio.play();
+
+  // TJA
+  const auto tja = loadTja(U"gekikk.tja");
+  Console << tja;
 
   // 到達時間
   const auto reachTimes = getReachTimes(64, 190.0, 0.5);
